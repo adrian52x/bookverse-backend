@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { CustomError } from '../lib/custom-error';
 import { ERROR } from '../lib/error-messages';
+import { validationResult } from 'express-validator';
 import { UserService } from '../services/userService';
 import { db } from '../db/database';
 import bcrypt from 'bcryptjs';
@@ -18,6 +19,13 @@ export const getUsersHandler = async (req: Request, res: Response, next: NextFun
 }
 
 export const registerUserHandler = async (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req)
+
+    // Check for validation errors
+    if (!errors.isEmpty()) {
+        return next(new CustomError(JSON.stringify(errors.array()), 400, req.url, req.method));
+    }
+
     try {
         const newUser = await userService.createUser(req.body);
         res.status(201).json(newUser);
@@ -27,6 +35,13 @@ export const registerUserHandler = async (req: Request, res: Response, next: Nex
 }
 
 export const loginUserHandler = async (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req)
+
+    // Check for validation errors
+    if (!errors.isEmpty()) {
+        return next(new CustomError(JSON.stringify(errors.array()), 400, req.url, req.method));
+    }
+
     try {
         const user = await userService.getUserByUsername(req.body.username);
         if (!user) {

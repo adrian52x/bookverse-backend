@@ -20,4 +20,8 @@ export const ERROR = {
     ROUTE_NOT_FOUND: "Route not found",
     INVALID_INPUT: "Invalid input data",
     UNAUTHORIZED: "Unauthorized access",
+
+    NO_TOKEN: "No token provided",
+    INVALID_TOKEN: "Invalid token",
+    NO_PERMISSION: "You do not have permission to perform this action",
 };

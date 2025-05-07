@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getUsersHandler, loginUserHandler, registerUserHandler } from '../handlers/userHandlers';
-
+import { registerUserValidator, loginUserValidator } from '../lib/validator-functions';
 
 const router = Router();
 
@@ -9,10 +9,10 @@ const router = Router();
 router.get('/users', getUsersHandler);
 
 // POST
-router.post('/login', loginUserHandler);
+router.post('/login', loginUserValidator, loginUserHandler);
 
 // POST
-router.post('/register', registerUserHandler);
+router.post('/register', registerUserValidator, registerUserHandler);
 
 
 export default router;

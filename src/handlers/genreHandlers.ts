@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { db } from '../db/database';
 import { CustomError } from '../lib/custom-error';
 import { ERROR } from '../lib/error-messages';
+import { validationResult } from 'express-validator';
 
 const genreService = new GenreService(db);
 
@@ -19,6 +20,13 @@ export const getGenresHandler = async (req: Request, res: Response, next: NextFu
 
 // CREATE GENRE
 export const createGenreHandler = async (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req)
+
+    // Check for validation errors
+    if (!errors.isEmpty()) {
+        return next(new CustomError(JSON.stringify(errors.array()), 400, req.url, req.method));
+    }
+
     try {
         const newGenre = await genreService.createGenre(req.body);
         res.status(201).json(newGenre);
@@ -30,6 +38,12 @@ export const createGenreHandler = async (req: Request, res: Response, next: Next
 // UPDATE GENRE
 export const updateGenreHandler = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
+    const errors = validationResult(req)
+
+    // Check for validation errors
+    if (!errors.isEmpty()) {
+        return next(new CustomError(JSON.stringify(errors.array()), 400, req.url, req.method));
+    }
 
     try {
         const updatedGenre = await genreService.updateGenre(Number(id), req.body);
