@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { swaggerUi, swaggerSpec } from './swagger';
+import { notFound } from './middleware/not-found';
+import { error } from './middleware/error';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +19,9 @@ app.use(cors());
 // Api docs - swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// Error handling middleware
+app.use(notFound);
+app.use(error);
 
 // Running server
 app.listen(PORT, () => {

@@ -1,10 +1,18 @@
 import { db } from './database';
-import { genres, books } from '../models/schema';
+import { genres, books, users } from '../models/schema';
 import bcrypt from 'bcryptjs';
 
 async function createTables() {
     console.log('Creating tables...');
 
+    db.run(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+      );
+    `);
+  
     db.run(`
       CREATE TABLE IF NOT EXISTS genres (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -18,6 +26,7 @@ async function createTables() {
         title TEXT NOT NULL,
         author TEXT NOT NULL,
         genre_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
         status TEXT DEFAULT 'to_read',
         cover_image TEXT,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -33,6 +42,18 @@ async function seedDatabase() {
     await createTables();
 
     console.log('Seeding database...');
+
+    // Encrypt passwords
+    const pass1 = await bcrypt.hash('123456', 10);
+    const pass2 = await bcrypt.hash('123456', 10);
+
+    // Insert users
+    db.insert(users).values([
+      { username: 'user1', password: pass1 },
+      { username: 'user2', password: pass2 },
+    ]).run();
+
+    console.log('Users table seeded.');
 
     // Insert genres
     db.insert(genres).values([
@@ -56,10 +77,10 @@ async function seedDatabase() {
 
     // Insert books
     db.insert(books).values([
-        { title: '1984', author: 'George Orwell', genreId: 1, status: 'read' },
-        { title: 'Sapiens', author: 'Yuval Noah Harari', genreId: 2, status: 'to_read' },
-        { title: 'Dune', author: 'Frank Herbert', genreId: 3, status: 'in_progress' },
-        { title: 'The Hobbit', author: 'J.R.R. Tolkien', genreId: 4, status: 'read' },
+        { title: '1984', author: 'George Orwell', genreId: 1, userId: 1, status: 'read' },
+        { title: 'Sapiens', author: 'Yuval Noah Harari', genreId: 2, userId: 1, status: 'to_read' },
+        { title: 'Dune', author: 'Frank Herbert', genreId: 3, userId: 2, status: 'in_progress' },
+        { title: 'The Hobbit', author: 'J.R.R. Tolkien', genreId: 4, userId: 2, status: 'read' },
     ]).run();
 
     console.log('Books table seeded.');
