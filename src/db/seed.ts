@@ -1,0 +1,72 @@
+import { db } from './database';
+import { genres, books } from '../models/schema';
+import bcrypt from 'bcryptjs';
+
+async function createTables() {
+    console.log('Creating tables...');
+
+    db.run(`
+      CREATE TABLE IF NOT EXISTS genres (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE
+      );
+    `);
+  
+    db.run(`
+      CREATE TABLE IF NOT EXISTS books (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        author TEXT NOT NULL,
+        genre_id INTEGER NOT NULL,
+        status TEXT DEFAULT 'to_read',
+        cover_image TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (genre_id) REFERENCES genres (id)
+      );
+    `);
+  
+    console.log('Tables created.');
+}
+
+async function seedDatabase() {
+
+    await createTables();
+
+    console.log('Seeding database...');
+
+    // Insert genres
+    db.insert(genres).values([
+        { name: 'Fiction' },
+        { name: 'Non-Fiction' },
+        { name: 'Science Fiction' },
+        { name: 'Fantasy' },
+        { name: 'Mystery' },
+        { name: 'Biography' },
+        { name: 'Self-Help' },
+        { name: 'Romance' },
+        { name: 'Thriller' },
+        { name: 'Historical Fiction' },
+        { name: 'Horror' },
+        { name: 'Poetry' },
+        { name: 'Graphic Novel' },
+        { name: 'Children\'s' },
+    ]).run();
+
+    console.log('Genres table seeded.');
+
+    // Insert books
+    db.insert(books).values([
+        { title: '1984', author: 'George Orwell', genreId: 1, status: 'read' },
+        { title: 'Sapiens', author: 'Yuval Noah Harari', genreId: 2, status: 'to_read' },
+        { title: 'Dune', author: 'Frank Herbert', genreId: 3, status: 'in_progress' },
+        { title: 'The Hobbit', author: 'J.R.R. Tolkien', genreId: 4, status: 'read' },
+    ]).run();
+
+    console.log('Books table seeded.');
+
+    console.log('Database seeding completed!');
+}
+
+seedDatabase().catch((error) => {
+    console.error('Error seeding database:', error);
+});
