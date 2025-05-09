@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getBooksHandler, createBookHandler, updateBookHandler, deleteBookHandler, getBookByIdHandler } from '../handlers/bookHandlers';
-import { bookCreateValidator, bookUpdateValidator } from '../lib/validator-functions';
+import { bookCreateValidator, bookUpdateValidator, getBooksQeuryValidator } from '../lib/validator-functions';
 import { BookService } from '../services/bookService';
 import { db } from '../db/database';
 import { verifyToken } from '../middleware/authJWT';
@@ -33,7 +33,7 @@ I did this in order to enable easy dependency injection for unit testing. (mock 
  *               items:
  *                 $ref: '#/components/schemas/Book'
  */ 
-router.get('/books', getBooksHandler(bookService));
+router.get('/books', getBooksQeuryValidator, getBooksHandler(bookService));
 
 // GET/:id
 /**

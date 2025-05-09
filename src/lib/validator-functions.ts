@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 import { db } from "../db/database";
 import { users } from "../models/schema";
 import { eq } from 'drizzle-orm';
@@ -12,6 +12,20 @@ import { eq } from 'drizzle-orm';
  * This helps prevent Cross-Site Scripting (XSS) attacks by ensuring that user input 
  * cannot be interpreted as executable HTML or JavaScript code.
 */
+
+export const getBooksQeuryValidator = [
+  query("title")
+    .optional()
+    .isString().withMessage("Title must be a string")
+    .trim()
+    .escape(),
+  query("genreId")
+    .optional()
+    .isInt({ min: 1 }).withMessage("Genre ID must be a positive integer"),
+  query("userId")
+    .optional()
+    .isInt({ min: 1 }).withMessage("User ID must be a positive integer")
+]
 
 export const bookCreateValidator = [
   body("title")
@@ -75,11 +89,9 @@ export const loginUserValidator = [
     .trim()
     .notEmpty().withMessage("Username is required")
     .isString().withMessage("Username must be a string")
-    .isLength({ min: 3, max: 20 }).withMessage("Username must be between 3 and 20 characters")
     .escape(),
   body("password")
     .notEmpty().withMessage("Password is required")
-    .isLength({ min: 6 }).withMessage("Password must be at least 6 characters long")
 ];
 
 export const registerUserValidator = [

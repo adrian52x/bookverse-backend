@@ -12,10 +12,11 @@ export const ERROR = {
     FAILED_DELETE_GENRE: "Failed to delete genre",
 
     FAILED_FETCH_USERS: "Failed to fetch users",
+    FAILED_FETCH_USER: "Failed to fetch user",
     USER_NOT_FOUND: "User not found",
     FAILED_REGISTER_USER: "Failed to register user",
     FAILED_LOGIN_USER: "Failed to login user",
-    INVALID_PASSWORD: "Invalid password",
+    INVALID_CREDENTIALS: "Invalid credentials",
 
     ROUTE_NOT_FOUND: "Route not found",
     INVALID_INPUT: "Invalid input data",
@@ -24,4 +25,5 @@ export const ERROR = {
     NO_TOKEN: "No token provided",
     INVALID_TOKEN: "Invalid token",
     NO_PERMISSION: "You do not have permission to perform this action",
+    FAILED_LOGOUT_USER: "Failed to logout user",
 };

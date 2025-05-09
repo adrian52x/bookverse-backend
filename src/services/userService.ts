@@ -7,7 +7,14 @@ export class UserService {
     constructor(private db: BetterSQLite3Database<typeof schema>) {}
 
     async getAllUsers() {
-        return await this.db.select().from(users).all();
+        return await this.db.select({
+            id: users.id,
+            username: users.username
+        }).from(users).all();
+    }
+
+    async getUserById(id: number) {
+        return await this.db.select().from(users).where(eq(users.id, id)).get();
     }
 
     async getUserByUsername(username: string) {

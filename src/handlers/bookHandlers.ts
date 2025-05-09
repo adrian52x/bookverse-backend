@@ -13,8 +13,25 @@ Handler is a function that return another function (express middleware).
 // GET ALL BOOKS
 export const getBooksHandler = (bookService: BookService) => 
     async (req: Request, res: Response, next: NextFunction) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(new CustomError(JSON.stringify(errors.array()), 400, req.url, req.method));
+    }
+
     try {
-        const books = await bookService.getAllBooks();
+        const { title, genreId, userId } = req.query;
+        const filters: {
+            title?: string;
+            genreId?: number;
+            userId?: number;
+        } = {};
+
+        if (title) filters.title = String(title);
+        if (genreId) filters.genreId = Number(genreId);
+        if (userId) filters.userId = Number(userId);
+
+        const books = await bookService.getAllBooks(filters);
         res.status(200).json(books);
     } catch (e) {
         next(new CustomError(ERROR.FAILED_FETCH_BOOKS, 500));
