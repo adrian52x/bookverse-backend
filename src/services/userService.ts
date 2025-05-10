@@ -6,6 +6,7 @@ import { eq } from 'drizzle-orm';
 export class UserService {
     constructor(private db: BetterSQLite3Database<typeof schema>) {}
 
+    // get all users without password
     async getAllUsers() {
         return await this.db.select({
             id: users.id,

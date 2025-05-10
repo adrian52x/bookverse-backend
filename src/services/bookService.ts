@@ -1,5 +1,5 @@
 import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { books } from '../models/schema';
+import { books, users, genres } from '../models/schema';
 import * as schema from '../models/schema';
 import { eq, like, and } from 'drizzle-orm';
 
@@ -15,7 +15,6 @@ export class BookService {
     // better-sqlite3 is a synchronous SQLite library 
 
     async getAllBooks(filters: getAllBooksFilters) {
-        //return await this.db.select().from(books).all();
         const conditions = [];
 
         if (filters.title) {
@@ -27,10 +26,28 @@ export class BookService {
         if (filters.userId) {
             conditions.push(eq(books.userId, filters.userId));
         }
+
+        const booksJoin = this.db
+            .select({  // flat object
+                id: books.id,
+                title: books.title,
+                author: books.author,
+                genreId: books.genreId,
+                userId: books.userId,
+                status: books.status,
+                coverImage: books.coverImage,
+                createdAt: books.createdAt,
+                username: users.username,
+                genreName: genres.name,
+            })
+            .from(books)
+            .leftJoin(users, eq(books.userId, users.id))
+            .leftJoin(genres, eq(books.genreId, genres.id));
     
         const query = conditions.length > 0
-            ? this.db.select().from(books).where(and(...conditions))
-            : this.db.select().from(books);
+            ? booksJoin.where(and(...conditions))
+            : booksJoin;
+    
     
         return await query.all();
     }
