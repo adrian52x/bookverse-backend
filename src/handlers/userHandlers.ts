@@ -27,8 +27,13 @@ export const registerUserHandler = async (req: Request, res: Response, next: Nex
         return next(new CustomError(JSON.stringify(errors.array()), 400, req.url, req.method));
     }
 
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
     try {
-        const newUser = await userService.createUser(req.body);
+        const newUser = await userService.createUser({
+            ...req.body,
+            password: hashedPassword,
+        });
         res.status(201).json(newUser);
     } catch (e) {
         next(new CustomError(ERROR.FAILED_REGISTER_USER, 500, req.url, req.method));

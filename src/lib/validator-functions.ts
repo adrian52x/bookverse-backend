@@ -13,7 +13,7 @@ import { eq } from 'drizzle-orm';
  * cannot be interpreted as executable HTML or JavaScript code.
 */
 
-export const getBooksQeuryValidator = [
+export const getBooksQueryValidator = [
   query("title")
     .optional()
     .isString().withMessage("Title must be a string")

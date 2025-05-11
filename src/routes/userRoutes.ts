@@ -14,6 +14,37 @@ router.get('/users', getUsersHandler);
 router.get('/users/me', verifyToken, getLoggedInUserHandler);
 
 // POST
+/**
+ * @swagger
+ * /api/login:
+ *   post:
+ *     summary: User login
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserAuthInput'
+ *     responses:
+ *       200:
+ *         description: Login successful, returns user without password and sends token as cookie [use above example to login]
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserAuthResponse'
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationErrorResponse'
+ *       401:
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UnauthorizedErrorResponse'
+ */
 router.post('/login', loginUserValidator, loginUserHandler);
 
 // POST

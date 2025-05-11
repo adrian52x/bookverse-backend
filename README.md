@@ -1,3 +1,82 @@
+## Features Implemented
+
+- **User Authentication**: JWT-based authentication with middleware for token verification (supports both Authorization header and cookies).
+- **Modular Project Structure**: Code is organized into clear modules (handlers, services, middleware, routes, etc.) for maintainability and scalability.
+- **Dependency Injection Pattern**: Services are injected into handlers, making the codebase more testable and flexible. 
+_(Currently, dependency injection is implemented for bookHandlers.)_
+- **Book Management**: CRUD operations for books, including filtering by title, genre, and user.
+- **Genre Management**: CRUD operations for genres.
+- **User Management**: User registration and login with password hashing (bcrypt).
+- **Validation**: Input validation and sanitization using express-validator.
+- **Error Handling**: Centralized error handling middleware and custom error classes.
+- **Relations**: Books are linked to users and genres, with joined queries returning related data.
+- **Testing**: Unit tests for handlers (booksHandler.spec.ts) using Jest and request/response mocking.
+- **Swagger Integration**: API documentation setup (Swagger UI).
+
+
+## Getting Started
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Create an empty `db` folder in the root of the project**
+   ```bash
+   mkdir db
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Seed the database with initial data**
+   ```bash
+   npm run seed
+   ```
+
+## Folder Structure
+
+```
+bookverse-backend/
+├── db/                         # Database files
+│   └── bookverse.db            # SQLite database file (created on first run of the seed script)
+├── src/
+│   ├── db/
+│   │   ├── database.ts         # Database connection setup
+│   │   └── seed.ts             # Database seeding script
+│   ├── handlers/               # Express route handlers (controllers)
+│   │   ├── bookHandlers.ts
+│   │   └── genreHandlers.ts
+│   │   └── userHandlers.ts
+│   ├── lib/                    # Utility libraries (validators, errors, etc.)
+│   │   ├── custom-error.ts
+│   │   ├── error-messages.ts
+│   │   └── validator-functions.ts
+│   ├── middleware/             # Express middleware (auth, error handling, etc.)
+│   │   ├── authJWT.ts
+│   │   ├── book-owner.ts
+│   │   ├── error.ts
+│   │   └── not-found.ts
+│   ├── models/                 # Database schema definitions
+│   │   └── schema.ts
+│   ├── routes/                 # Express route definitions
+│   │   ├── bookRoutes.ts
+│   │   ├── genreRoutes.ts
+│   │   └── userRoutes.ts
+│   ├── services/               # Business logic and database access
+│   │   ├── bookService.ts
+│   │   ├── genreService.ts
+│   │   └── userService.ts
+│   ├── __tests__/              # Unit and integration tests
+│   │   └── booksHandler.spec.ts
+│   └── server.ts               # Express server entry point
+├── package.json                # Project dependencies and scripts
+├── tsconfig.json               # TypeScript configuration
+└── README.md                   # Project documentation
+```
+
+
 # BookVerse - Book Tracking Application
 
 A modern book tracking application built with TypeScript, Express, and Drizzle ORM. This repository contains the backend server for the BookVerse application.
@@ -5,7 +84,6 @@ A modern book tracking application built with TypeScript, Express, and Drizzle O
 ## Project Overview
 
 BookVerse is a book tracking application that allows users to manage their reading list. Users can add books, categorize them by genres, and track their reading status (to read, in progress, or read).
-
 ## Tech Stack
 
 - **TypeScript**: Provides type safety and better developer experience

@@ -77,10 +77,14 @@ async function seedDatabase() {
 
     // Insert books
     db.insert(books).values([
-        { title: '1984', author: 'George Orwell', genreId: 1, userId: 1, status: 'read' },
-        { title: 'Sapiens', author: 'Yuval Noah Harari', genreId: 2, userId: 1, status: 'to_read' },
+        { title: '1984', author: 'George Orwell', genreId: 1, userId: 1, status: 'read', coverImage: 'https://sfnpgydezdiiexmftraz.supabase.co/storage/v1/object/public/bookverse//1984.jpg' },
+        { title: 'Sapiens', author: 'Yuval Noah Harari', genreId: 2, userId: 1, status: 'to_read', coverImage: 'https://sfnpgydezdiiexmftraz.supabase.co/storage/v1/object/public/bookverse//sapiens.png' },
         { title: 'Dune', author: 'Frank Herbert', genreId: 3, userId: 2, status: 'in_progress' },
-        { title: 'The Hobbit', author: 'J.R.R. Tolkien', genreId: 4, userId: 2, status: 'read' },
+        { title: 'The Hobbit', author: 'J.R.R. Tolkien', genreId: 4, userId: 2, status: 'read', coverImage: 'https://sfnpgydezdiiexmftraz.supabase.co/storage/v1/object/public/bookverse//The-Hobbit-.png' },
+        { title: 'The Da Vinci Code', author: 'Dan Brown', genreId: 5, userId: 1, status: 'to_read' },
+        { title: 'Becoming', author: 'Michelle Obama', genreId: 6, userId: 2, status: 'read', coverImage: 'https://sfnpgydezdiiexmftraz.supabase.co/storage/v1/object/public/bookverse//becoming.webp' },
+        { title: 'The Power of Habit', author: 'Charles Duhigg', genreId: 7, userId: 1, status: 'in_progress', coverImage: 'https://sfnpgydezdiiexmftraz.supabase.co/storage/v1/object/public/bookverse//the%20power.jpeg' },
+        { title: 'Pride and Prejudice', author: 'Jane Austen', genreId: 8, userId: 2, status: 'to_read', coverImage: 'https://sfnpgydezdiiexmftraz.supabase.co/storage/v1/object/public/bookverse//pride.png' },
     ]).run();
 
     console.log('Books table seeded.');

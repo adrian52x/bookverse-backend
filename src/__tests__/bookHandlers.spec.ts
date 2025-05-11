@@ -56,6 +56,7 @@ function createMockRequest(): object {
         body: {},
         url: "",
         method: "",
+        query: {}
     }
 }
 

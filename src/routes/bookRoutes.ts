@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getBooksHandler, createBookHandler, updateBookHandler, deleteBookHandler, getBookByIdHandler } from '../handlers/bookHandlers';
-import { bookCreateValidator, bookUpdateValidator, getBooksQeuryValidator } from '../lib/validator-functions';
+import { bookCreateValidator, bookUpdateValidator, getBooksQueryValidator } from '../lib/validator-functions';
 import { BookService } from '../services/bookService';
 import { db } from '../db/database';
 import { verifyToken } from '../middleware/authJWT';
@@ -23,6 +23,22 @@ I did this in order to enable easy dependency injection for unit testing. (mock 
  * /api/books:
  *   get:
  *     summary: Returns a list of books
+ *     parameters:
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *         description: Filter books by title (partial match)
+ *       - in: query
+ *         name: genreId
+ *         schema:
+ *           type: integer
+ *         description: Filter books by genre ID
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         description: Filter books by user ID
  *     responses:
  *       200:
  *         description: list of books
@@ -31,9 +47,9 @@ I did this in order to enable easy dependency injection for unit testing. (mock 
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Book'
- */ 
-router.get('/books', getBooksQeuryValidator, getBooksHandler(bookService));
+ *                 $ref: '#/components/schemas/BookWithRelations'
+ */
+router.get('/books', getBooksQueryValidator, getBooksHandler(bookService));
 
 // GET/:id
 /**
@@ -84,27 +100,20 @@ router.get('/books/:id', getBookByIdHandler(bookService));
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ResponseBody'
+ *               $ref: '#/components/schemas/DbChangeResponse'
  *       400:
  *         description: Validation error
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 errors:
- *                   type: array
- *                   items:
- *                     type: object
- *               example:
- *                 message:
- *                   - type: "field"
- *                     value: 0
- *                     msg: "Invalid value"
- *                     path: "author"
- *                     location: "body"
- *                 url: "/books"
- *                 method: "POST"
+ *               $ref: '#/components/schemas/ValidationErrorResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UnauthorizedErrorResponse'
+ * 
  */ 
 router.post('/books', 
     verifyToken, 
@@ -137,28 +146,27 @@ router.post('/books',
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ResponseBody'
+ *               $ref: '#/components/schemas/DbChangeResponse'
  *       400:
  *         description: Validation error
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 errors:
- *                   type: array
- *                   items:
- *                     type: object
- *               example:
- *                 message:
- *                   - type: "field"
- *                     value: ""
- *                     msg: "Invalid value"
- *                     path: "title"
- *                     location: "body"
- *                 url: "/books"
- *                 method: "PATCH"
- */
+ *               $ref: '#/components/schemas/ValidationErrorResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UnauthorizedErrorResponse'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ForbiddenErrorResponse' 
+ * 
+ */ 
 router.patch('/books/:id', 
     verifyToken, 
     authorizeBookOwner, 
@@ -185,11 +193,24 @@ router.patch('/books/:id',
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ResponseBody'
+ *               $ref: '#/components/schemas/DbChangeResponse'
  *             example:
  *               changes: 1
  *               lastInsertRowid: 0
- */
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UnauthorizedErrorResponse'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ForbiddenErrorResponse' 
+ * 
+ */ 
 router.delete('/books/:id',
     verifyToken, 
     authorizeBookOwner,  
